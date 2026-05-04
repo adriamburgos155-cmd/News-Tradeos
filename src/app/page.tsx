@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react'
 import { useMarket, useNews, useCalendar, useFred } from '@/hooks/useMarketData'
 import { MOCK_SECTORS } from '@/lib/market-data'
-
 import { TopBar }        from '@/components/terminal/TopBar'
 import { Sidebar }       from '@/components/terminal/Sidebar'
 import type { NavPage }  from '@/components/terminal/Sidebar'
@@ -14,7 +13,6 @@ import { NewsView }      from '@/components/terminal/NewsView'
 import { HeatmapView }   from '@/components/terminal/HeatmapView'
 import { FredView }      from '@/components/fred/FredView'
 import { ChatPanel }     from '@/components/chat/ChatPanel'
-import { MessageSquare } from 'lucide-react'
 
 export default function Terminal() {
   const { market, isMock, refresh, updatedAt } = useMarket()
@@ -22,10 +20,10 @@ export default function Terminal() {
   const { events, source }                     = useCalendar()
   const { fred, isMock: fredMock }             = useFred()
 
-  const [page,        setPage]        = useState<NavPage>('dashboard')
-  const [settingsOpen,setSettingsOpen]= useState(false)
-  const [chatOpen,    setChatOpen]    = useState(false)
-  const [hasKey,      setHasKey]      = useState(false)
+  const [page,         setPage]        = useState<NavPage>('dashboard')
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [chatOpen,     setChatOpen]    = useState(false)
+  const [hasKey,       setHasKey]      = useState(false)
 
   useEffect(() => {
     const check = () => setHasKey(!!localStorage.getItem('gi_groq_key'))
@@ -36,12 +34,13 @@ export default function Terminal() {
 
   return (
     <div className="h-screen flex flex-col bg-black text-on-surface overflow-hidden">
-      {/* Top bar */}
-      <TopBar market={market} isMock={isMock} onOpenSettings={() => setSettingsOpen(true)} />
+      <TopBar
+        market={market}
+        isMock={isMock}
+        onOpenSettings={() => setSettingsOpen(true)}
+      />
 
-      {/* Body */}
       <div className="flex flex-1 min-h-0 pt-10 pb-6">
-        {/* Sidebar */}
         <Sidebar
           active={page}
           onChange={setPage}
@@ -49,7 +48,6 @@ export default function Terminal() {
           onOpenSettings={() => setSettingsOpen(true)}
         />
 
-        {/* Main content */}
         <main className="flex-1 min-w-0 ml-12 md:ml-44 overflow-hidden px-3 pt-3 pb-1">
           {page === 'dashboard' && (
             <DashboardView
@@ -74,10 +72,8 @@ export default function Terminal() {
         </main>
       </div>
 
-      {/* Bottom ticker */}
       <TickerBar market={market} />
 
-      {/* Chat FAB */}
       {!chatOpen && (
         <button
           onClick={() => setChatOpen(true)}
@@ -88,7 +84,6 @@ export default function Terminal() {
         </button>
       )}
 
-      {/* Chat panel */}
       <ChatPanel
         isOpen={chatOpen}
         onClose={() => setChatOpen(false)}
@@ -97,7 +92,6 @@ export default function Terminal() {
         fred={fred}
       />
 
-      {/* Settings */}
       <SettingsPanel
         isOpen={settingsOpen}
         onClose={() => setSettingsOpen(false)}

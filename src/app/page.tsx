@@ -1,5 +1,4 @@
 'use client'
-'use client'
 import { useState, useEffect } from 'react'
 import { useMarket, useNews, useCalendar, useFred } from '@/hooks/useMarketData'
 import { MOCK_SECTORS } from '@/lib/market-data'

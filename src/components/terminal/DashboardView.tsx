@@ -5,7 +5,7 @@ import {
 } from 'recharts'
 import type { MarketSummary, CalendarEvent, NewsItem, SectorPerf } from '@/lib/types'
 import { useChart } from '@/hooks/useMarketData'
-import { fmt, fmtB, timeAgo } from '@/lib/market-data'
+import { fmt, timeAgo } from '@/lib/market-data'
 import { clsx } from 'clsx'
 
 // ── Instrument card ──────────────────────────────────────

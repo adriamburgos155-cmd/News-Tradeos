@@ -4,32 +4,50 @@ import type { MarketSummary, NewsItem, OHLCV, CalendarEvent, FredDollarAnalysis 
 
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
-export function useMarket() {
+export function useMarket(): {
+  market: MarketSummary | null
+  isMock: boolean
+  isLoading: boolean
+  error: unknown
+  refresh: () => void
+  updatedAt: string | null
+} {
   const { data, error, isLoading, mutate } = useSWR('/api/market', fetcher, {
     refreshInterval: 30000, revalidateOnFocus: true, dedupingInterval: 10000,
   })
-  return { market:(data?.data as MarketSummary)|null, isMock:data?.mock||false, isLoading, error, refresh:mutate, updatedAt:data?.updatedAt||null }
+  return {
+    market:    (data?.data as MarketSummary) ?? null,
+    isMock:    data?.mock ?? false,
+    isLoading,
+    error,
+    refresh:   mutate,
+    updatedAt: data?.updatedAt ?? null,
+  }
 }
 
-export function useNews() {
+export function useNews(): { news: NewsItem[]; isMock: boolean; isLoading: boolean } {
   const { data, isLoading } = useSWR('/api/news', fetcher, { refreshInterval:120000, dedupingInterval:60000 })
-  return { news:(data?.data as NewsItem[])||[], isMock:data?.mock||false, isLoading }
+  return { news:(data?.data as NewsItem[]) ?? [], isMock:data?.mock??false, isLoading }
 }
 
-export function useChart(symbol: string) {
+export function useChart(symbol: string): { ohlcv: OHLCV[]; isMock: boolean; isLoading: boolean } {
   const { data, isLoading } = useSWR(`/api/chart?symbol=${symbol}`, fetcher, { refreshInterval:300000 })
-  return { ohlcv:(data?.data as OHLCV[])||[], isMock:data?.mock||false, isLoading }
+  return { ohlcv:(data?.data as OHLCV[]) ?? [], isMock:data?.mock??false, isLoading }
 }
 
-export function useCalendar() {
+export function useCalendar(): { events: CalendarEvent[]; source: string; isLoading: boolean } {
   const { data, isLoading } = useSWR('/api/calendar', fetcher, { refreshInterval:1800000 })
-  return { events:(data?.data as CalendarEvent[])||[], source:data?.source||'fallback', isLoading }
+  return { events:(data?.data as CalendarEvent[]) ?? [], source:data?.source??'fallback', isLoading }
 }
 
-export function useFred() {
+export function useFred(): { fred: FredDollarAnalysis | null; isMock: boolean; isLoading: boolean; refresh: () => void } {
   const { data, isLoading, mutate } = useSWR('/api/fred', fetcher, {
-    refreshInterval: 3600000, // hourly
-    revalidateOnFocus: false,
+    refreshInterval:3600000, revalidateOnFocus:false,
   })
-  return { fred:(data?.data as FredDollarAnalysis)|null, isMock:data?.mock||false, isLoading, refresh:mutate }
+  return {
+    fred:     (data?.data as FredDollarAnalysis) ?? null,
+    isMock:   data?.mock ?? false,
+    isLoading,
+    refresh:  mutate,
+  }
 }
